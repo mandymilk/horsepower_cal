@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time Value Calculator</title>
+    <style>
+        body {
+            width: 320px;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-weight: 500;
+            color: #34495e;
+        }
+        input, select {
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2980b9;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 5px 0;
+        }
+        .motivation {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .working-hours {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Time Value Calculator</h2>
+        
+        <div class="input-group">
+            <label for="salary">Annual Salary</label>
+            <input type="number" id="salary" placeholder="Enter your yearly salary" min="0" step="1000">
+        </div>
+
+        <div class="input-group">
+            <label for="workingHours">Working Hours</label>
+            <select id="workingHours">
+                <option value="standard">Standard (40hrs/week)</option>
+                <option value="part35">Part-time (35hrs/week)</option>
+                <option value="part20">Part-time (20hrs/week)</option>
+                <option value="custom">Custom Hours</option>
+            </select>
+        </div>
+
+        <div id="customHoursDiv" style="display: none;" class="input-group">
+            <label for="customHours">Hours per Week</label>
+            <input type="number" id="customHours" placeholder="Enter hours per week" min="1" max="168">
+        </div>
+
+        <button id="calculate">Calculate My Time Value</button>
+
+        <div class="results">
+            <div class="value" id="perHour">Per hour: $0.00</div>
+            <div class="value" id="perMinute">Per minute: $0.00</div>
+            <div class="value" id="perSecond">Per second: $0.00</div>
+            <div class="working-hours" id="workingSummary">
+                Based on 2,080 working hours per year
+            </div>
+            <div class="motivation">
+                "Make every minute count - your time is valuable!"
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
