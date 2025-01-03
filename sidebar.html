@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time Value Calculator</title>
+    <style>
+        body {
+            min-width: 300px;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-weight: 500;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2980b9;
+        }
+        button {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            margin-top: auto;
+        }
+        .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 5px 0;
+        }
+        .motivation {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .working-hours {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+        .comparison-container {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comparison-container h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .item-progress {
+            margin-bottom: 15px;
+        }
+        .progress-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .item-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        .progress-bar {
+            background-color: #eee;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: #3498db;
+            transition: width 1s linear;
+        }
+        .time-left {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .value {
+            transition: color 0.3s;
+        }
+        .value.updated {
+            color: #27ae60;
+            animation: pulse 0.5s ease-in-out;
+        }
+        .yearly-summary {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .yearly-summary h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .yearly-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .yearly-item {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            transition: transform 0.3s;
+        }
+        .yearly-item:hover {
+            transform: translateY(-2px);
+        }
+        .item-count {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5px;
+        }
+        .item-count span:first-child {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .item-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+        @keyframes countUp {
+            from {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+                color: #27ae60;
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        .count-updated {
+            animation: countUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Time Value Calculator</h2>
+        
+        <div class="input-group">
+            <label for="salary">Annual Salary</label>
+            <input type="number" id="salary" placeholder="Enter your yearly salary" min="0" step="1000">
+        </div>
+
+        <div class="input-group">
+            <label for="workingHours">Working Hours</label>
+            <select id="workingHours">
+                <option value="horse">Horse Mode (50hrs/week)</option>
+                <option value="standard">Standard (40hrs/week)</option>
+                <option value="part35">Part-time (35hrs/week)</option>
+                <option value="part20">Part-time (20hrs/week)</option>
+                <option value="custom">Custom Hours</option>
+            </select>
+        </div>
+
+        <div id="customHoursDiv" style="display: none;" class="input-group">
+            <label for="customHours">Hours per Week</label>
+            <input type="number" id="customHours" placeholder="Enter hours per week" min="1" max="168">
+        </div>
+
+        <button id="calculate">Calculate My Time Value</button>
+
+        <div class="results">
+            <div class="value" id="perHour">Per hour: $0.00</div>
+            <div class="value" id="perMinute">Per minute: $0.00</div>
+            <div class="value" id="perSecond">Per second: $0.00</div>
+            <div class="working-hours" id="workingSummary">
+                Based on 2,080 working hours per year
+            </div>
+            <div class="motivation">
+                "Make every minute count - your time is valuable!"
+            </div>
+        </div>
+
+        <div class="comparison-container">
+            <h3>What You Could Buy</h3>
+            <div class="item-progress">
+                <div class="progress-label">
+                    <img src="icons/coca-cola.png" alt="Coca Cola" class="item-icon">
+                    <span>Coca Cola ($2.00)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="colaProgress"></div>
+                </div>
+                <div class="time-left" id="colaTime">Loading...</div>
+            </div>
+            <div class="item-progress">
+                <div class="progress-label">
+                    <img src="icons/coffee.png" alt="Coffee" class="item-icon">
+                    <span>Coffee ($5.00)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="coffeeProgress"></div>
+                </div>
+                <div class="time-left" id="coffeeTime">Loading...</div>
+            </div>
+            <div class="item-progress">
+                <div class="progress-label">
+                    <img src="icons/lunch.png" alt="Lunch" class="item-icon">
+                    <span>Lunch ($15.00)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="lunchProgress"></div>
+                </div>
+                <div class="time-left" id="lunchTime">Loading...</div>
+            </div>
+        </div>
+
+        <div class="yearly-summary">
+            <h3>Your Yearly Earnings Equal To</h3>
+            <div class="yearly-items">
+                <div class="yearly-item">
+                    <img src="icons/coca-cola.png" alt="Coca Cola" class="item-icon">
+                    <div class="item-count">
+                        <span id="colaYearly">0</span>
+                        <span class="item-label">Coca Colas</span>
+                    </div>
+                </div>
+                <div class="yearly-item">
+                    <img src="icons/coffee.png" alt="Coffee" class="item-icon">
+                    <div class="item-count">
+                        <span id="coffeeYearly">0</span>
+                        <span class="item-label">Coffees</span>
+                    </div>
+                </div>
+                <div class="yearly-item">
+                    <img src="icons/lunch.png" alt="Lunch" class="item-icon">
+                    <div class="item-count">
+                        <span id="lunchYearly">0</span>
+                        <span class="item-label">Lunches</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="sidebar.js"></script>
+</body>
+</html> 
