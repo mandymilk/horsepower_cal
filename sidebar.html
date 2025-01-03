@@ -3,244 +3,360 @@
 <head>
     <title>Time Value Calculator</title>
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --success: #22c55e;
+            --progress-bg: #e2e8f0;
+        }
+
         body {
-            min-width: 300px;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+            min-width: 260px;
+            padding: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
             height: 100vh;
             margin: 0;
             box-sizing: border-box;
             overflow-y: auto;
+            background-color: var(--background);
+            font-size: 14px;
         }
+
         .container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             max-width: 100%;
             margin: 0 auto;
         }
-        h2 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 20px;
-            text-align: center;
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
+
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        h2, h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
         }
+
         label {
             font-weight: 500;
-            color: #34495e;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
         }
+
         input, select {
             width: 100%;
-            padding: 8px;
-            border: 2px solid #3498db;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
+            padding: 6px 8px;
+            border: 2px solid var(--progress-bg);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            background: var(--background);
+            color: var(--text-primary);
         }
+
         input:focus, select:focus {
             outline: none;
-            border-color: #2980b9;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
+
         button {
             width: 100%;
-            background-color: #3498db;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            transition: all 0.2s;
         }
+
         button:hover {
-            background-color: #2980b9;
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
         }
-        .results {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #3498db;
-            margin-top: auto;
-        }
+
         .value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 5px 0;
-        }
-        .motivation {
-            font-style: italic;
-            color: #7f8c8d;
-            margin-top: 10px;
-            font-size: 13px;
-            text-align: center;
-        }
-        .working-hours {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #666;
-        }
-        .comparison-container {
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .comparison-container h3 {
-            margin: 0 0 15px 0;
-            color: #2c3e50;
-            font-size: 16px;
-        }
-        .item-progress {
-            margin-bottom: 15px;
-        }
-        .progress-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 6px 0;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
         }
-        .item-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
+
+        .value-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
+
         .progress-bar {
-            background-color: #eee;
-            height: 8px;
+            background-color: var(--progress-bg);
+            height: 6px;
             border-radius: 4px;
             overflow: hidden;
+            position: relative;
         }
+
         .progress {
             width: 0%;
             height: 100%;
-            background-color: #3498db;
-            transition: width 1s linear;
+            background-color: var(--primary-color);
+            transition: width 0.3s linear;
+            position: relative;
         }
+
+        .progress.complete {
+            background-color: var(--success);
+        }
+
         .time-left {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 3px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .value {
-            transition: color 0.3s;
-        }
-        .value.updated {
-            color: #27ae60;
-            animation: pulse 0.5s ease-in-out;
-        }
-        .yearly-summary {
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .yearly-summary h3 {
-            margin: 0 0 15px 0;
-            color: #2c3e50;
-            font-size: 16px;
-        }
+
         .yearly-items {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 8px;
         }
+
         .yearly-item {
-            text-align: center;
+            background: var(--background);
             padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            transition: transform 0.3s;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s;
         }
+
         .yearly-item:hover {
             transform: translateY(-2px);
         }
+
+        .item-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 6px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .real-time-indicator {
+            width: 6px;
+            height: 6px;
+            background-color: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        .motivation {
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* Add smooth transitions for all animations */
+        * {
+            transition: all 0.2s ease;
+        }
+
+        .item-progress {
+            margin-bottom: 12px;
+        }
+
+        .item-progress:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-label img {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+        }
+
+        .progress-label span {
+            flex-grow: 1;
+        }
+
+        .working-hours {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
         .item-count {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 5px;
+            gap: 2px;
         }
-        .item-count span:first-child {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2c3e50;
+
+        .item-count .value {
+            font-size: 1rem;
+            margin: 0;
         }
-        .item-label {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 2px;
+
+        .item-count .value-label {
+            font-size: 0.7rem;
         }
-        @keyframes countUp {
-            from {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-                color: #27ae60;
-            }
-            to {
-                transform: scale(1);
-            }
+
+        /* Make the first card more compact */
+        .input-card {
+            padding: 10px;
         }
-        .count-updated {
-            animation: countUp 0.5s ease-out;
+
+        .input-card h2 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-card .input-group {
+            margin-bottom: 8px;
+        }
+
+        .input-card .input-group:last-of-type {
+            margin-bottom: 10px;
+        }
+
+        .input-card input, 
+        .input-card select {
+            padding: 4px 6px;
+            font-size: 0.85rem;
+            height: 28px;
+        }
+
+        .input-card button {
+            padding: 6px;
+            font-size: 0.85rem;
+            height: 30px;
+        }
+
+        .input-card label {
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+        }
+
+        .real-time-indicator {
+            width: 4px;
+            height: 4px;
+            margin-right: 4px;
+        }
+
+        /* Add these styles for better placeholder text */
+        .input-card input::placeholder {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Make select options more compact */
+        .input-card select option {
+            font-size: 0.85rem;
+            padding: 2px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Your Time Value Calculator</h2>
-        
-        <div class="input-group">
-            <label for="salary">Annual Salary</label>
-            <input type="number" id="salary" placeholder="Enter your yearly salary" min="0" step="1000">
+        <div class="card input-card">
+            <h2>
+                <span class="real-time-indicator"></span>
+                Time Value Calculator
+            </h2>
+            
+            <div class="input-group">
+                <label for="salary">Annual Salary</label>
+                <input type="number" id="salary" placeholder="Enter yearly salary" min="0" step="1000">
+            </div>
+
+            <div class="input-group">
+                <label for="workingHours">Working Hours</label>
+                <select id="workingHours">
+                    <option value="horse">Horse Mode (50hrs/week)</option>
+                    <option value="standard">Standard (40hrs/week)</option>
+                    <option value="part35">Part-time (35hrs/week)</option>
+                    <option value="part20">Part-time (20hrs/week)</option>
+                    <option value="custom">Custom Hours</option>
+                </select>
+            </div>
+
+            <div id="customHoursDiv" style="display: none;" class="input-group">
+                <label for="customHours">Hours per Week</label>
+                <input type="number" id="customHours" placeholder="Enter hours" min="1" max="168">
+            </div>
+
+            <button id="calculate">Calculate</button>
         </div>
 
-        <div class="input-group">
-            <label for="workingHours">Working Hours</label>
-            <select id="workingHours">
-                <option value="horse">Horse Mode (50hrs/week)</option>
-                <option value="standard">Standard (40hrs/week)</option>
-                <option value="part35">Part-time (35hrs/week)</option>
-                <option value="part20">Part-time (20hrs/week)</option>
-                <option value="custom">Custom Hours</option>
-            </select>
-        </div>
-
-        <div id="customHoursDiv" style="display: none;" class="input-group">
-            <label for="customHours">Hours per Week</label>
-            <input type="number" id="customHours" placeholder="Enter hours per week" min="1" max="168">
-        </div>
-
-        <button id="calculate">Calculate My Time Value</button>
-
-        <div class="results">
-            <div class="value" id="perHour">Per hour: $0.00</div>
-            <div class="value" id="perMinute">Per minute: $0.00</div>
-            <div class="value" id="perSecond">Per second: $0.00</div>
+        <div class="card">
+            <div class="value">
+                <span class="value-label">Per hour</span>
+                <span id="perHour">$0.00</span>
+            </div>
+            <div class="value">
+                <span class="value-label">Per minute</span>
+                <span id="perMinute">$0.00</span>
+            </div>
+            <div class="value">
+                <span class="value-label">Per second</span>
+                <span id="perSecond">$0.00</span>
+            </div>
             <div class="working-hours" id="workingSummary">
                 Based on 2,080 working hours per year
             </div>
-            <div class="motivation">
-                "Make every minute count - your time is valuable!"
-            </div>
+            <div class="motivation">Make every minute count - your time is valuable!</div>
         </div>
 
-        <div class="comparison-container">
-            <h3>What You Could Buy</h3>
+        <div class="card">
+            <h3>Real-time Progress</h3>
             <div class="item-progress">
                 <div class="progress-label">
                     <img src="icons/coca-cola.png" alt="Coca Cola" class="item-icon">
@@ -273,28 +389,28 @@
             </div>
         </div>
 
-        <div class="yearly-summary">
-            <h3>Your Yearly Earnings Equal To</h3>
+        <div class="card">
+            <h3>Yearly Potential</h3>
             <div class="yearly-items">
                 <div class="yearly-item">
                     <img src="icons/coca-cola.png" alt="Coca Cola" class="item-icon">
                     <div class="item-count">
-                        <span id="colaYearly">0</span>
-                        <span class="item-label">Coca Colas</span>
+                        <span id="colaYearly" class="value">0</span>
+                        <span class="value-label">Coca Colas</span>
                     </div>
                 </div>
                 <div class="yearly-item">
                     <img src="icons/coffee.png" alt="Coffee" class="item-icon">
                     <div class="item-count">
-                        <span id="coffeeYearly">0</span>
-                        <span class="item-label">Coffees</span>
+                        <span id="coffeeYearly" class="value">0</span>
+                        <span class="value-label">Coffees</span>
                     </div>
                 </div>
                 <div class="yearly-item">
                     <img src="icons/lunch.png" alt="Lunch" class="item-icon">
                     <div class="item-count">
-                        <span id="lunchYearly">0</span>
-                        <span class="item-label">Lunches</span>
+                        <span id="lunchYearly" class="value">0</span>
+                        <span class="value-label">Lunches</span>
                     </div>
                 </div>
             </div>

@@ -83,6 +83,15 @@ document.addEventListener('DOMContentLoaded', function() {
             lunch: document.getElementById('lunchTime')
         };
 
+        // Verify all elements exist
+        const allElementsExist = Object.values(progressBars).every(el => el) && 
+                               Object.values(timeLabels).every(el => el);
+        
+        if (!allElementsExist) {
+            console.warn('Some progress elements not found');
+            return;
+        }
+
         // Clear any existing interval
         if (window.progressInterval) {
             clearInterval(window.progressInterval);
@@ -91,22 +100,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calculate initial time estimates
         Object.keys(ITEM_PRICES).forEach(item => {
             const price = ITEM_PRICES[item];
-            const timeToEarn = price / minuteRate;  // Time in minutes
-            const minutes = Math.floor(timeToEarn);
-            const seconds = Math.floor((timeToEarn - minutes) * 60);
+            const minutesToEarn = price / minuteRate;
+            const minutes = Math.floor(minutesToEarn);
+            const seconds = Math.floor((minutesToEarn - minutes) * 60);
             timeLabels[item].textContent = 
                 `${minutes}m ${seconds}s until you can buy this`;
         });
 
         // Update progress every second
         window.progressInterval = setInterval(() => {
-            earnings += minuteRate / 60; // Add one second's worth of earnings
+            earnings += minuteRate / 60;
 
-            // Update each item's progress
             Object.keys(ITEM_PRICES).forEach(item => {
                 const price = ITEM_PRICES[item];
                 const progress = (earnings / price) * 100;
-                
+
                 progressBars[item].style.width = Math.min(progress, 100) + '%';
                 
                 if (progress >= 100) {
@@ -115,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     progressBars[item].style.animation = 'pulse 1s infinite';
                 } else {
                     const remainingAmount = price - earnings;
-                    const timeLeft = remainingAmount / (minuteRate / 60); // Convert to seconds
-                    const minutes = Math.floor(timeLeft / 60);
-                    const seconds = Math.floor(timeLeft % 60);
+                    const minutesLeft = remainingAmount / (minuteRate);
+                    const minutes = Math.floor(minutesLeft);
+                    const seconds = Math.floor((minutesLeft - Math.floor(minutesLeft)) * 60);
                     timeLabels[item].textContent = 
                         `${minutes}m ${seconds}s until you can buy this`;
                 }
@@ -132,21 +140,39 @@ document.addEventListener('DOMContentLoaded', function() {
             lunch: document.getElementById('lunchYearly')
         };
 
+        // Verify all elements exist
+        if (!Object.values(counts).every(el => el)) {
+            console.warn('Some yearly count elements not found');
+            return;
+        }
+
         Object.keys(ITEM_PRICES).forEach(item => {
             const count = Math.floor(yearlyIncome / ITEM_PRICES[item]);
             const countElement = counts[item];
             
-            // Animate the count update
             countElement.classList.remove('count-updated');
-            void countElement.offsetWidth; // Trigger reflow
+            void countElement.offsetWidth;
             countElement.classList.add('count-updated');
             
-            // Format the number with commas
             countElement.textContent = count.toLocaleString();
         });
     }
 
     function calculateTimeValue() {
+        // Verify required elements exist
+        const requiredElements = {
+            perHour: document.getElementById('perHour'),
+            perMinute: document.getElementById('perMinute'),
+            perSecond: document.getElementById('perSecond'),
+            workingSummary: document.getElementById('workingSummary'),
+            motivation: document.querySelector('.motivation')
+        };
+
+        if (!Object.values(requiredElements).every(el => el)) {
+            console.warn('Some required elements not found');
+            return;
+        }
+
         const yearlyIncome = parseFloat(salary.value) || 0;
         const hoursPerYear = getWorkingHoursPerYear(
             workingHours.value,
@@ -171,26 +197,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const secondRate = minuteRate / 60;
 
         // Update displays
-        perHour.textContent = `Per hour: ${formatCurrency(hourlyRate)}`;
-        perMinute.textContent = `Per minute: ${formatCurrency(minuteRate)}`;
-        perSecond.textContent = `Per second: ${formatCurrency(secondRate)}`;
-        workingSummary.textContent = 
+        requiredElements.perHour.textContent = `Per hour: ${formatCurrency(hourlyRate)}`;
+        requiredElements.perMinute.textContent = `Per minute: ${formatCurrency(minuteRate)}`;
+        requiredElements.perSecond.textContent = `Per second: ${formatCurrency(secondRate)}`;
+        requiredElements.workingSummary.textContent = 
             `Based on ${hoursPerYear.toLocaleString()} working hours per year`;
 
-        // Update yearly counts with animation
+        // Update yearly counts
         updateYearlyCounts(yearlyIncome);
 
         // Show random motivational quote
-        document.querySelector('.motivation').textContent = 
+        requiredElements.motivation.textContent = 
             motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
 
+        // Start progress tracking
         updateProgress(minuteRate);
-
-        // Add animation to the rate displays
-        [perHour, perMinute, perSecond].forEach(element => {
-            element.classList.add('updated');
-            setTimeout(() => element.classList.remove('updated'), 500);
-        });
     }
 
     // Event Listeners
@@ -221,6 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('unload', () => {
         if (window.progressInterval) {
             clearInterval(window.progressInterval);
+        }
+        if (window.realTimeInterval) {
+            clearInterval(window.realTimeInterval);
         }
     });
 }); 
